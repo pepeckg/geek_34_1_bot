@@ -8,7 +8,7 @@ async def onstart_up(_):
     db.sql_create_tables()
 
 
-
+# 2
 
 start.register_start_handlers(dp=dp)
 callback.register_callback_handlers(dp=dp)
