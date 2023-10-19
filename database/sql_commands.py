@@ -13,7 +13,7 @@ class Database:
 
         self.conn.execute(sql_queries.CREATE_USER_TABLE_QUERY)
         self.conn.execute(sql_queries.CREATE_BAN_USER_TABLE_QUERY)
-        self.conn.execute(sql_queries.CREATE_USER_FORM_TABLE_QUERY)
+
         self.conn.commit()
 
     def sql_insert_user_query(self, telegram_id, username, first_name, last_name):
