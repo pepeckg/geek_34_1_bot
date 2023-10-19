@@ -32,13 +32,13 @@ async def secret_word(message: types.Message):
     if message.from_user.id == 301020687:
         await bot.send_message(
             chat_id=message.from_user.id,
-            text="Hello, my master!",
+            text="Приветствую, хозяин!",
             reply_markup=await admin_keyboard()
         )
     else:
         await bot.send_message(
             chat_id=message.from_user.id,
-            text="You have no rights"
+            text="Вы не правы"
 
         )
 async def admin_user_list_call(call: types.CallbackQuery):
