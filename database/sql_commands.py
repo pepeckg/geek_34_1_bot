@@ -16,6 +16,7 @@ class Database:
         self.conn.execute(sql_queries.CREATE_BAN_USER_TABLE_QUERY)
         self.conn.execute(sql_queries.CREATE_USER_FORM_TABLE_QUERY)
         self.conn.execute(sql_queries.CREATE_LIKE_TABLE_QUERY)
+        self.conn.execute(sql_queries.CREATE_DISLIKE_TABLE_QUERY)
         self.conn.commit()
 
     def sql_insert_user_query(self, telegram_id, username, first_name, last_name):
@@ -121,6 +122,13 @@ class Database:
         )
         self.conn.commit()
 
+    def sql_insert_dislike_query(self, owner, disliker):
+        self.cursor.execute(
+            sql_queries.INSERT_DISLIKE_QUERY,
+            (None, owner, disliker,)
+        )
+        self.conn.commit()
+
     def sql_delete_form_query(self, owner):
         self.cursor.execute(
             sql_queries.DELETE_USER_FORM_QUERY,
@@ -146,5 +154,16 @@ class Database:
         for row in rows:
             liked_users.append(row[0])
         return liked_users
+
+    def get_disliked_users(self, disliker_telegram_id):
+        disliked_users = []
+        self.cursor.execute(
+            sql_queries.SELECT_DISLIKER_USER,
+            (disliker_telegram_id,)
+        )
+        rows = self.cursor.fetchall()
+        for row in rows:
+            disliked_users.append(row[0])
+        return disliked_users
 
 

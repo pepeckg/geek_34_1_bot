@@ -202,9 +202,12 @@ async def my_profile_call(call: types.CallbackQuery):
 #         )
 async def random_profiles_call(call):
     liker_telegram_id = call.from_user.id
+    disliker_telegram_id = call.from_user.id
     users = Database().sql_select_all_user_form_query()
     liked_users = Database().get_liked_users(liker_telegram_id)
-    filtered_users = [user for user in users if user['telegram_id'] not in liked_users]
+    disliked_users = Database().get_disliked_users(disliker_telegram_id)
+    filtered_users = [user for user in users if user['telegram_id'] not in liked_users
+                      and user['telegram_id'] not in disliked_users]
 
     if filtered_users:
         random_form = random.choice(filtered_users)
@@ -242,9 +245,35 @@ async def like_detect_call(call: types.CallbackQuery):
             chat_id=call.from_user.id,
             text="You already liked form before"
         )
+    except sqlite3.OperationalError:
+        await bot.send_message(
+            chat_id=call.from_user.id,
+            text="You already liked form before"
+        )
     finally:
         await random_profiles_call(call=call)
 
+async def dislike_detect_call(call: types.CallbackQuery):
+    # print(call.data)
+    owner_tg_id = re.sub("user_form_dislike_", "", call.data)
+    # print(owner_tg_id)
+    try:
+        Database().sql_insert_dislike_query(
+            owner=owner_tg_id,
+            disliker=call.from_user.id
+        )
+    except sqlite3.IntegrityError:
+        await bot.send_message(
+            chat_id=call.from_user.id,
+            text="You already liked form before"
+        )
+    except sqlite3.OperationalError:
+        await bot.send_message(
+            chat_id=call.from_user.id,
+            text="You already liked form before"
+        )
+    finally:
+        await random_profiles_call(call=call)
 
 async def delete_form_call(call: types.CallbackQuery):
     Database().sql_delete_form_query(
@@ -282,5 +311,7 @@ def register_fsm_form_handlers(dp: Dispatcher):
                                        lambda call: call.data == "random_profile")
     dp.register_callback_query_handler(like_detect_call,
                                        lambda call: "user_form_like_" in call.data)
+    dp.register_callback_query_handler(dislike_detect_call,
+                                       lambda call: "user_form_dislike_" in call.data)
     dp.register_callback_query_handler(delete_form_call,
                                        lambda call: call.data == "delete_profile")
