@@ -2,7 +2,7 @@ from aiogram import types, Dispatcher
 
 from config import bot
 from keyboards.inline_buttons import questionnaire_one_keyboard
-
+from scraping.news_scraper import NewsScraper
 
 async def start_questionnaire(call: types.CallbackQuery):
     print(call)
@@ -28,6 +28,14 @@ async def bad_answer(call: types.CallbackQuery):
         text="Выпий пива",
     )
 
+async def latest_news_call(call: types.CallbackQuery):
+    scraper = NewsScraper()
+    links = scraper.parse_data()
+    for link in links:
+        await bot.send_message(
+            chat_id=call.message.chat.id,
+            text=link,
+        )
 
 def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(start_questionnaire,
@@ -36,3 +44,5 @@ def register_callback_handlers(dp: Dispatcher):
                                        lambda call: call.data == "mood_fine")
     dp.register_callback_query_handler(bad_answer,
                                        lambda call: call.data == "mood_bad")
+    dp.register_callback_query_handler(latest_news_call,
+                                       lambda call: call.data == "latest_news")
