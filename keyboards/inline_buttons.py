@@ -27,12 +27,17 @@ async def start_keyboard():
         "Нескучные новости",
         callback_data="latest_news"
     )
+    latest_news_by_group_call = InlineKeyboardButton(
+        "Нескучные новости2",
+        callback_data="latest_news_by_group_call"
+    )
     markup.add(questionnaire_button)
     markup.add(registration_button)
     markup.add(my_profile_button)
     markup.add(random_profile_button)
     markup.add(reference_menu_button)
     markup.add(latest_news_button)
+    markup.add(latest_news_by_group_call)
     return markup
 
 
