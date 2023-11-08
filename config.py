@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from decouple import config
 
+PROXY_URL = "http://proxy.server:3128"
 TOKEN = config("TOKEN")
 bot = Bot(token=TOKEN)
 storage = MemoryStorage()
